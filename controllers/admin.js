@@ -1,18 +1,30 @@
 const { validationResult } = require('express-validator/check');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/admin');
+const Admin = require('../models/admin');
+const Checkout = require('../models/logout');
 
 
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+tod = mm + '/' + dd + '/' + yyyy;
+
+let time = new Date(2019, 09, 03)
 
 exports.signup = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error('Validation failed.');
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   const error = new Error('Validation failed.');
+  //   error.statusCode = 422;
+  //   error.data = errors.array();
+  //   throw error;
+  // }
   const name = req.body.name;
   const email = req.body.email;
   const phone = req.body.phone;
@@ -40,6 +52,7 @@ exports.signup = (req, res, next) => {
       next(err);
     });
 };
+
 
 exports.login = (req, res, next) => {
   const email = req.body.email;
@@ -79,6 +92,38 @@ exports.login = (req, res, next) => {
     });
 };
 
+exports.updateUser = (req, res) => {
+  const userId = req.params.id;
+  const data = req.body;
+  Admin.findOne({ _id: mongoose.Types.ObjectId(userId) }, (err, foundAdmin) => {
+ 
+    if (err) {
+        console.error(err);
+        res.send({ error: err });
+        return;
+        }
+    if (foundAdmin === null) {
+      res.send({ error: "NO ADMIN FOUND" });
+      return;
+    }
+ 
+    foundAdmin.name = req.body.name;
+    foundAdmin.email = req.body.email;
+    foundAdmin.phone = req.body.phone;
+    foundAdmin.password = req.body.password;
+ 
+    foundAdmin.save((err) => {
+        if (err) {
+          console.error(err);
+          res.send({ error: err });
+          return;
+        }
+        console.log("ADMIN EDITED");
+        res.send({status : "UPDATED"});
+    });
+  });
+};
+
 exports.deleteUser = (req, res, next) => {
   console.log(req.body)
   User.deleteOne({ email: req.body.email}).then(user => {
@@ -87,9 +132,16 @@ exports.deleteUser = (req, res, next) => {
       }
   });
 };
-exports.postLogout = (req, res, next) => {
-  req.session.destroy(err => {
-    console.log(err);
-    res.send({ status: "CHECKED OUT" });
-  });
+exports.postLogout = async (req,res) => {
+let logout = new Checkout () 
+try{
+let log = await logout.save()
+console.log("You are Checked Out!")
+res.json(log)
+}catch{
+  error =>{
+    
+    res.json({error})
+  }
+}
 };

@@ -1,7 +1,9 @@
 const { validationResult } = require('express-validator/check');
+const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Host = require('../models/host');
+const host = require('../models/host');
 
 
 exports.createHost = (req, res) => {
@@ -56,11 +58,40 @@ exports.readHost =  (req, res) => {
 };
 
 //Update - to edit the host info
-exports.updateHost = (req, res) => {
-  const userId = req.query.uid;
+// exports.updateHost = (req, res) => {
+//   const userId = req.query.uid;
+//   const data = req.body;
+//   Host.findOne({ _id: mongoose.Types.ObjectId(userId) }, (err, foundHost) => {
+//     if (err) {
+//         console.error(err);
+//         res.send({ error: err });
+//         return;
+//         }
+//     if (foundHost === null) {
+//       res.send({ error: "NO HOST FOUND" });
+//       return;
+//     }
+
+//     foundHost.name = req.body.name;
+//     foundHost.email = req.body.email;
+//     foundHost.phone = req.body.phone;
+//     foundHost.address = req.body.address;
+
+//     foundHost.save((err) => {
+//         if (err) {
+//           console.error(err);
+//           res.send({ error: err });
+//           return;
+//         }
+//         console.log("HOST EDITED");
+//         res.send({status : "UPDATED"});
+//     });
+//   });
+// };
+exports.updateHost = (req, res, next) => {
+  const userId = req.params.id;
   const data = req.body;
   Host.findOne({ _id: mongoose.Types.ObjectId(userId) }, (err, foundHost) => {
-
     if (err) {
         console.error(err);
         res.send({ error: err });
@@ -70,12 +101,10 @@ exports.updateHost = (req, res) => {
       res.send({ error: "NO HOST FOUND" });
       return;
     }
-
     foundHost.name = req.body.name;
     foundHost.email = req.body.email;
     foundHost.phone = req.body.phone;
-    foundHost.address = req.body.address;
-
+    foundHost.password = req.body.password;
     foundHost.save((err) => {
         if (err) {
           console.error(err);
@@ -83,23 +112,16 @@ exports.updateHost = (req, res) => {
           return;
         }
         console.log("HOST EDITED");
-        res.send({status : "UPDATED"});
+        res.send({status : "HOST UPDATED"});
     });
   });
 };
 
 //Delete - if any time the host leaves the organisation
-exports.deleteHost = (req, res) => {
-  const userId = req.query.uid;
-  Host.deleteOne({ _id: mongoose.Types.ObjectId(userId) }, (err) => {
-    if(err){
-        console.error(err);
-        res.send({ error: err });
-        return;
-    }
-
-    console.log("HOST DELETED");
-    res.send({ status: "DELETED" });
-
+exports.deleteHost = (req, res, next) => {
+  Host.deleteOne({ email: req.body.email}).then(user => {
+      if (user) {
+          return res.status(200).json({message: 'Host deleted successfully. Refreshing data...', success: true});
+      }
   });
-}
+};

@@ -19,13 +19,13 @@ const adminSchema = new Schema({
     type: String,
     required: true
   },
-  host: {
+  department: {
     type: String,
-    required: true
+    required: false
   },
   status: {
     type: String,
-    default: 'I am new!'
+    default: ''
   },
   posts: [
     {

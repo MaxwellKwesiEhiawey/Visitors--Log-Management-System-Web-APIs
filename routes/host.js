@@ -12,7 +12,7 @@ router.get("/read/hosts", hostController.readHosts); // read hosts
 
 router.get("/read", hostController.readHosts); //read a host
 
-router.put("/edit", hostController.updateHost);   // to update host details
+router.put("/edit/:id", hostController.updateHost);   // to update host details
 
 router.delete("/del", hostController.deleteHost) //to delete form worker
 

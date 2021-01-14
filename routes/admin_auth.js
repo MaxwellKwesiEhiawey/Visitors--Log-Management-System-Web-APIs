@@ -4,6 +4,7 @@ const { login } = require('../controllers/admin');
 const adminController = require('../controllers/admin');
 const { body } = require('express-validator/check');
 const User = require('../models/admin');
+const logout = require('../models/logout');
 const router = express.Router();
 router.post(
   '/signup',
@@ -38,13 +39,11 @@ router.post(
   adminController.signup
 );
 
-
-
 router.post("/login", login);
-
 ///to logout///
-
 router.post('/logout', adminController.postLogout);
+// to update
+router.put("/edit/:id", adminController.updateUser);
 
 ///to delete user///
 
