@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require("cors");
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
@@ -10,6 +11,7 @@ const flash = require('connect-flash');
 const MONGODB_URI = 'mongodb+srv://Max:MongoDB20Amali20@cluster01.3dmw7.mongodb.net/MINI-PROJECT?retryWrites=true&w=majority';
 const app = express();
 app.use(bodyParser.json());
+app.use(cors);
 app.use(bodyParser.urlencoded({extended:true}));
 const store = new MongoDBStore({
   uri: MONGODB_URI,
