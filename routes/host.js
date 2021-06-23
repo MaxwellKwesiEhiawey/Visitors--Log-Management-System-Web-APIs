@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { login } = require('../controllers/host');
 const hostController = require('../controllers/host');
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const Host = require('../models/host');
 const router = express.Router();
 

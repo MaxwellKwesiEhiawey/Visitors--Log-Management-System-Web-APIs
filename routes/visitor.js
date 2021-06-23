@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { login } = require('../controllers/host');
 const mongoose = require("mongoose");
 const visitorController = require('../controllers/visitor');
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const Visitor = require('../models/visitor');
 const router = express.Router();
 const 

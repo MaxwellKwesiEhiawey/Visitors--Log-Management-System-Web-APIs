@@ -8,7 +8,19 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 // const errorController = require('./controllers/error');
 // const Admin = require('./models/admin');
-const MONGODB_URI = 'mongodb+srv://Max:MongoDB20Amali20@cluster01.3dmw7.mongodb.net/MINI-PROJECT?retryWrites=true&w=majority';
+const MONGODB_URI = 'mongodb+srv://MaxMax:MongoDB20Amali20@cluster0.w7xlh.mongodb.net/MINI-PROJECT?retryWrites=true&w=majority';
+
+//'mongodb+srv://Max:MongoDB20Amali20@cluster01.3dmw7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+//mongodb+srv://meekmyle:MeekMyle21@ecommerce.9vz2s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+///'mongodb+srv://@MeekyMyle@ecommerce.9vz2s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+
+const connectionOptions = {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+}
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors);
@@ -29,12 +41,13 @@ app.use("/host", hostRoute);
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 mongoose
-  .connect(MONGODB_URI)
-  .then(result => {
-    app.listen(PORT, HOST, function(){ 
-      console.log(`app listen on port ${PORT}`);
-    });
+  .connect(MONGODB_URI, connectionOptions).then(() => {
+    console.log('Successfully connected to database')
+  }).catch((error) => {
+    cosnole.log('Could not connect to the database', error);
+    process.exit();
   })
-  .catch(err => {
-    console.log(err);
-  });
+
+app.listen(PORT, function(){
+  console.log(`app listen on port ${PORT}`);
+});
